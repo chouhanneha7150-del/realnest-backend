@@ -1,5 +1,6 @@
 services:
   - type: web
     name: realnest-backend
+    env: java
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
