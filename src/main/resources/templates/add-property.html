@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Property</title>
+</head>
+<body>
+
+<h2>Add New Property</h2>
+
+<form action="/add" method="post">
+    <label>Title:</label><br>
+    <input type="text" name="title"><br><br>
+
+    <label>Location:</label><br>
+    <input type="text" name="location"><br><br>
+
+    <label>Price:</label><br>
+    <input type="number" name="price"><br><br>
+
+    <button type="submit">Save</button>
+</form>
+
+<br>
+<a href="/properties-ui">Back</a>
+
+</body>
+</html>

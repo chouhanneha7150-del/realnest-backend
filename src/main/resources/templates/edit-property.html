@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Property</title>
+</head>
+<body>
+
+<h2>Edit Property</h2>
+
+<form th:action="@{'/update/' + ${property.id}}" method="post">
+
+  <label>Title:</label><br>
+  <input type="text" name="title" th:value="${property.title}" /><br><br>
+
+  <label>Location:</label><br>
+  <input type="text" name="location" th:value="${property.location}" /><br><br>
+
+  <label>Price:</label><br>
+  <input type="number" name="price" th:value="${property.price}" /><br><br>
+
+  <button type="submit">Update</button>
+
+</form>
+
+<br>
+<a href="/properties-ui">Back</a>
+
+</body>
+</html>
