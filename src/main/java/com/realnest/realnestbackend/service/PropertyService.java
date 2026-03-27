@@ -29,34 +29,46 @@ public class PropertyService {
                 .orElseThrow(() -> new RuntimeException("Property not found with id: " + id));
     }
 
-    // ✅ SEARCH (ADD HERE 👇)
+    // ✅ SEARCH
     public List<Property> search(String keyword) {
         List<Property> byTitle = repository.findByTitleContainingIgnoreCase(keyword);
         List<Property> byLocation = repository.findByLocationContainingIgnoreCase(keyword);
 
-        byTitle.addAll(byLocation);
-        return byTitle;
+        // Remove duplicates (important)
+        Set<Property> result = new HashSet<>();
+        result.addAll(byTitle);
+        result.addAll(byLocation);
+
+        return new ArrayList<>(result);
     }
 
-    // ✅ UPDATE
+    // ✅ UPDATE (FIXED & SAFE)
     public Property updateProperty(String id, Property newProperty) {
-        Optional<Property> existing = repository.findById(id);
 
-        if (existing.isPresent()) {
-            Property property = existing.get();
+        Property existing = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Property not found with id: " + id));
 
-            property.setTitle(newProperty.getTitle());
-            property.setLocation(newProperty.getLocation());
-            property.setPrice(newProperty.getPrice());
-
-            return repository.save(property);
-        } else {
-            throw new RuntimeException("Property not found with id: " + id);
+        // Update only if values are provided
+        if (newProperty.getTitle() != null) {
+            existing.setTitle(newProperty.getTitle());
         }
+
+        if (newProperty.getLocation() != null) {
+            existing.setLocation(newProperty.getLocation());
+        }
+
+        if (newProperty.getPrice() != 0) {
+            existing.setPrice(newProperty.getPrice());
+        }
+
+        return repository.save(existing);
     }
 
     // ✅ DELETE
     public void delete(String id) {
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("Property not found with id: " + id);
+        }
         repository.deleteById(id);
     }
 }
