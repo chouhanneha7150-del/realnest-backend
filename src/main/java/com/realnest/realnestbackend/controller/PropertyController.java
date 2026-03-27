@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/properties")
+@CrossOrigin("*") // 🔥 important for frontend later
 public class PropertyController {
 
     @Autowired
@@ -20,10 +21,16 @@ public class PropertyController {
         return service.save(property);
     }
 
-    // ✅ READ (GET ALL)
+    // ✅ GET ALL
     @GetMapping
     public List<Property> getAllProperties() {
         return service.getAll();
+    }
+
+    // ✅ GET BY ID (🔥 ADD THIS)
+    @GetMapping("/{id}")
+    public Property getPropertyById(@PathVariable String id) {
+        return service.getById(id);
     }
 
     // ✅ UPDATE

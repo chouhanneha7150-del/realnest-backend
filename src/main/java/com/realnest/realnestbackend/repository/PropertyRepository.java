@@ -7,8 +7,7 @@ import java.util.List;
 
 public interface PropertyRepository extends MongoRepository<Property, String> {
 
-    // ✅ SEARCH METHODS
-    List<Property> findByTitleContainingIgnoreCase(String title);
+    List<Property> findByTitleContainingIgnoreCase(String keyword);
 
-    List<Property> findByLocationContainingIgnoreCase(String location);
+    List<Property> findByLocationContainingIgnoreCase(String keyword);
 }

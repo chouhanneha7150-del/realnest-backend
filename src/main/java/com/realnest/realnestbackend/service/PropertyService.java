@@ -5,7 +5,7 @@ import com.realnest.realnestbackend.repository.PropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 public class PropertyService {
@@ -18,7 +18,7 @@ public class PropertyService {
         return repository.save(property);
     }
 
-    // ✅ READ (GET ALL)
+    // ✅ READ ALL
     public List<Property> getAll() {
         return repository.findAll();
     }
@@ -34,34 +34,21 @@ public class PropertyService {
         List<Property> byTitle = repository.findByTitleContainingIgnoreCase(keyword);
         List<Property> byLocation = repository.findByLocationContainingIgnoreCase(keyword);
 
-        // Remove duplicates (important)
-        Set<Property> result = new HashSet<>();
-        result.addAll(byTitle);
-        result.addAll(byLocation);
-
-        return new ArrayList<>(result);
+        byTitle.addAll(byLocation);
+        return byTitle;
     }
 
-    // ✅ UPDATE (FIXED & SAFE)
+    // ✅ UPDATE (🔥 FIXED)
     public Property updateProperty(String id, Property newProperty) {
 
-        Property existing = repository.findById(id)
+        Property existingProperty = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found with id: " + id));
 
-        // Update only if values are provided
-        if (newProperty.getTitle() != null) {
-            existing.setTitle(newProperty.getTitle());
-        }
+        existingProperty.setTitle(newProperty.getTitle());
+        existingProperty.setLocation(newProperty.getLocation());
+        existingProperty.setPrice(newProperty.getPrice());
 
-        if (newProperty.getLocation() != null) {
-            existing.setLocation(newProperty.getLocation());
-        }
-
-        if (newProperty.getPrice() != 0) {
-            existing.setPrice(newProperty.getPrice());
-        }
-
-        return repository.save(existing);
+        return repository.save(existingProperty);
     }
 
     // ✅ DELETE
