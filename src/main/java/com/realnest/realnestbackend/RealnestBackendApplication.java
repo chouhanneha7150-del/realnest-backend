@@ -9,5 +9,4 @@ public class RealnestBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(RealnestBackendApplication.class, args);
     }
-
 }

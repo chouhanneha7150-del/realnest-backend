@@ -7,60 +7,48 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 public class PropertyUIController {
 
     @Autowired
     private PropertyService service;
 
-    // ✅ 1. SHOW ALL PROPERTIES
-    @GetMapping("/properties-ui")
-    public String showProperties(Model model) {
-        model.addAttribute("properties", service.getAll());
+    // ✅ SHOW ALL PROPERTIES
+    @GetMapping("/properties")
+    public String viewProperties(Model model) {
+        List<Property> list = service.getAllProperties();
+        model.addAttribute("properties", list);
         return "properties";
     }
 
-    // ✅ ⭐ NEW: SEARCH
-    @GetMapping("/search")
-    public String search(@RequestParam String keyword, Model model) {
-        model.addAttribute("properties", service.search(keyword));
-        return "properties";
-    }
-
-    // ✅ 2. SHOW ADD FORM PAGE
-    @GetMapping("/add")
+    // ✅ SHOW ADD FORM
+    @GetMapping("/add-property")
     public String showAddForm(Model model) {
         model.addAttribute("property", new Property());
         return "add-property";
     }
 
-    // ✅ 3. SAVE PROPERTY (FORM SUBMIT)
-    @PostMapping("/add-property")
-    public String addProperty(@ModelAttribute Property property) {
-        service.save(property);
-        return "redirect:/properties-ui";
+    // ✅ SAVE PROPERTY
+    @PostMapping("/save-property")
+    public String saveProperty(@ModelAttribute Property property) {
+        service.createProperty(property);
+        return "redirect:/properties";
     }
 
-    // ✅ 4. DELETE PROPERTY
+    // ✅ DELETE PROPERTY
     @GetMapping("/delete/{id}")
     public String deleteProperty(@PathVariable String id) {
-        service.delete(id);
-        return "redirect:/properties-ui";
+        service.deleteProperty(id);
+        return "redirect:/properties";
     }
 
-    // ✅ 5. SHOW EDIT PAGE
-    @GetMapping("/edit/{id}")
-    public String showEditPage(@PathVariable String id, Model model) {
-        Property property = service.getById(id);
-        model.addAttribute("property", property);
-        return "edit-property";
-    }
-
-    // ✅ 6. UPDATE PROPERTY
-    @PostMapping("/update/{id}")
-    public String updateProperty(@PathVariable String id,
-                                 @ModelAttribute Property property) {
-        service.updateProperty(id, property);
-        return "redirect:/properties-ui";
+    // ✅ SEARCH
+    @GetMapping("/search")
+    public String search(@RequestParam String keyword, Model model) {
+        List<Property> results = service.searchProperties(keyword);
+        model.addAttribute("properties", results);
+        return "properties";
     }
 }

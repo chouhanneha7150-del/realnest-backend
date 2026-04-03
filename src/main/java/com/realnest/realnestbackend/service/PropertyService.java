@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PropertyService {
@@ -14,48 +15,45 @@ public class PropertyService {
     private PropertyRepository repository;
 
     // ✅ CREATE
-    public Property save(Property property) {
+    public Property createProperty(Property property) {
         return repository.save(property);
     }
 
-    // ✅ READ ALL
-    public List<Property> getAll() {
+    // ✅ GET ALL
+    public List<Property> getAllProperties() {
         return repository.findAll();
     }
 
     // ✅ GET BY ID
-    public Property getById(String id) {
+    public Property getPropertyById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found with id: " + id));
     }
 
-    // ✅ SEARCH
-    public List<Property> search(String keyword) {
-        List<Property> byTitle = repository.findByTitleContainingIgnoreCase(keyword);
-        List<Property> byLocation = repository.findByLocationContainingIgnoreCase(keyword);
+    // ✅ UPDATE
+    public Property updateProperty(String id, Property property) {
+        Property existing = getPropertyById(id);
 
-        byTitle.addAll(byLocation);
-        return byTitle;
-    }
+        existing.setTitle(property.getTitle());
+        existing.setLocation(property.getLocation());
+        existing.setPrice(property.getPrice());
 
-    // ✅ UPDATE (🔥 FIXED)
-    public Property updateProperty(String id, Property newProperty) {
-
-        Property existingProperty = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Property not found with id: " + id));
-
-        existingProperty.setTitle(newProperty.getTitle());
-        existingProperty.setLocation(newProperty.getLocation());
-        existingProperty.setPrice(newProperty.getPrice());
-
-        return repository.save(existingProperty);
+        return repository.save(existing);
     }
 
     // ✅ DELETE
-    public void delete(String id) {
-        if (!repository.existsById(id)) {
-            throw new RuntimeException("Property not found with id: " + id);
-        }
+    public void deleteProperty(String id) {
         repository.deleteById(id);
+    }
+
+    // ✅ SEARCH (Optional but powerful 💡)
+    public List<Property> searchProperties(String keyword) {
+        return repository.findAll()
+                .stream()
+                .filter(p ->
+                        p.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
+                                p.getLocation().toLowerCase().contains(keyword.toLowerCase())
+                )
+                .toList();
     }
 }

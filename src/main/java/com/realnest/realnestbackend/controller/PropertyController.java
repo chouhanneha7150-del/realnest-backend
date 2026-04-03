@@ -9,40 +9,44 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/properties")
-@CrossOrigin("*") // 🔥 important for frontend later
 public class PropertyController {
 
     @Autowired
     private PropertyService service;
 
+    // ✅ TEST API (ADD THIS)
+    @GetMapping("/test")
+    public String test() {
+        return "Working!";
+    }
+
     // ✅ CREATE
     @PostMapping
-    public Property addProperty(@RequestBody Property property) {
-        return service.save(property);
+    public Property create(@RequestBody Property property) {
+        return service.createProperty(property);
     }
 
     // ✅ GET ALL
     @GetMapping
-    public List<Property> getAllProperties() {
-        return service.getAll();
+    public List<Property> getAll() {
+        return service.getAllProperties();
     }
 
-    // ✅ GET BY ID (🔥 ADD THIS)
+    // ✅ GET BY ID
     @GetMapping("/{id}")
-    public Property getPropertyById(@PathVariable String id) {
-        return service.getById(id);
+    public Property getById(@PathVariable String id) {
+        return service.getPropertyById(id);
     }
 
     // ✅ UPDATE
     @PutMapping("/{id}")
-    public Property updateProperty(@PathVariable String id, @RequestBody Property property) {
+    public Property update(@PathVariable String id, @RequestBody Property property) {
         return service.updateProperty(id, property);
     }
 
     // ✅ DELETE
     @DeleteMapping("/{id}")
-    public String deleteProperty(@PathVariable String id) {
-        service.delete(id);
-        return "Property deleted successfully!";
+    public void delete(@PathVariable String id) {
+        service.deleteProperty(id);
     }
 }

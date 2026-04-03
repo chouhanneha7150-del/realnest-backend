@@ -11,12 +11,10 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    // ✅ REGISTER
-    public User save(User user) {
+    public User register(User user) {
         return repository.save(user);
     }
 
-    // ✅ LOGIN (returns User, NOT boolean)
     public User login(String email, String password) {
         return repository.findByEmailAndPassword(email, password);
     }
